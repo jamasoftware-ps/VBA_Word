@@ -1,4 +1,4 @@
-Attribute VB_Name = "Jama_Export_PostProcessing"
+Attribute VB_Name = "Functions"
 '***************************************************************************************************
 '
 'Public Variables and Options
@@ -7,42 +7,7 @@ Attribute VB_Name = "Jama_Export_PostProcessing"
 Option Explicit
 
 '***************************************************************************************************
-'Name:      Sub AutoOpen()
-'
-'Purpose:   Runs automatically when the document is loaded and macros are enabled
-'
-'Inputs:    None
-'
-'Returns:   None
-'
-'***************************************************************************************************
-Sub AutoOpen()
-    
-    'resize all images to fit on the page
-    ResizeImages
-    
-    'resize all tables to fit on the page
-    ResizeTables
-    
-    'Remove outline level from Item IDs and Item Names
-    RemoveOutlineLevel ("Item ID")
-    RemoveOutlineLevel ("Item Name")
-
-    'ensure all text of style Normal uses the font Arial
-    repairFonts ("Arial")
-
-    'remove extra white space from the document
-    removeExtraWhiteSpace
-    
-    'return the cursor to the top of the document
-    Selection.HomeKey Unit:=wdStory
-    
-End Sub
-
-
-
-'***************************************************************************************************
-'Name:      Private Function removeExtraWhiteSpace()
+'Name:      Function removeExtraWhiteSpace()
 '
 'Purpose:   Remove unwanted white space from the document
 '
@@ -51,7 +16,7 @@ End Sub
 'Returns:   None
 '
 '***************************************************************************************************
-Private Function removeExtraWhiteSpace()
+Function removeExtraWhiteSpace()
     '
     'Eliminate Non-Breaking Spaces
     '
@@ -117,7 +82,7 @@ End Function
 
 
 '***************************************************************************************************
-'Name:      Private Function repairFonts(font_face As String)
+'Name:      Function repairFonts(font_face As String)
 '
 'Purpose:   convert all text with style Normal to have the font face specified
 '
@@ -126,7 +91,7 @@ End Function
 'Returns:   None
 '
 '***************************************************************************************************
-Private Function repairFonts(font_face As String)
+Function repairFonts(font_face As String)
     '
     'Fix Font Face
     '
@@ -154,7 +119,7 @@ Private Function repairFonts(font_face As String)
 End Function
 
 '***************************************************************************************************
-'Name:      Private Function ResizeImages()
+'Name:      Function ResizeImages()
 '
 'Purpose:   Resize images to be no larger than a page
 '
@@ -163,7 +128,7 @@ End Function
 'Returns:   None
 '
 '***************************************************************************************************
-Private Function ResizeImages()
+Function ResizeImages()
   Dim dblPageWidth As Double          'stores the pages width
   Dim dblPageHeight As Double         'stores the page height
   Dim dblAspectRatio As Double        'stores the dblAspectRatio of the current image
@@ -213,50 +178,41 @@ ErrHandler:
 End Function
 
 '***************************************************************************************************
-'Name:      Private Function RemoveOutlineLevel(strStyle as string)
+'Name:      Function RemoveOutlineLevel(strStyle as string)
 '
-'Purpose:   Resize images to be no larger than a page
+'Purpose:   Sets outline level of all text with specified style to Body Text
 '
 'Inputs:    strStyle: style to remove outline level from
 '
 'Returns:   None
 '
 '***************************************************************************************************
-Private Function RemoveOutlineLevel(strStyle As String)
-  Dim intParagraphIndex As Integer  'index used for looping through all paragraphs in the document
-  Dim intParagraphCount As Integer  'total number of paragraphs in the document at start of function
-  
-  intParagraphCount = ActiveDocument.Paragraphs.Count
-  
-  For intParagraphIndex = intParagraphCount To 1 Step -1
-
-    'Handle any errors
-    On Error GoTo ErrHandler:
-    
-    ActiveDocument.Paragraphs(intParagraphIndex).Range.Select
-    
-    If Selection.Style = ActiveDocument.Styles(strStyle) Then
-      Selection.ParagraphFormat.OutlineLevel = wdOutlineLevelBodyText
-    End If
-                
-NextIteration:
-    If intParagraphIndex < 2 Then
-      Exit Function
-    End If
-  
-  Next intParagraphIndex
-  
-  Exit Function
-  
-ErrHandler:
-  Debug.Print intParagraphIndex & " [Error]: Error #" & Err.Number & " occured while processing '" & Selection.Range.Text & "'"
-  Resume NextIteration:
-  
+Function RemoveOutlineLevel(strStyle As String)
+  Selection.Find.ClearFormatting
+  Selection.Find.Style = ActiveDocument.Styles(strStyle)
+  Selection.Find.Replacement.ClearFormatting
+  With Selection.Find.Replacement
+      .Style = ActiveDocument.Styles(strStyle)
+      .ParagraphFormat.OutlineLevel = wdOutlineLevelBodyText
+  End With
+  With Selection.Find
+      .Text = ""
+      .Replacement.Text = ""
+      .Forward = True
+      .Wrap = wdFindContinue
+      .Format = True
+      .MatchCase = False
+      .MatchWholeWord = False
+      .MatchWildcards = False
+      .MatchSoundsLike = False
+      .MatchAllWordForms = False
+  End With
+  Selection.Find.Execute Replace:=wdReplaceAll
 End Function
 
 
 '***************************************************************************************************
-'Name:      Private Function ResizeTables()
+'Name:      Function ResizeTables()
 '
 'Purpose:   Resize tables to be no larger than a page
 '
@@ -265,9 +221,8 @@ End Function
 'Returns:   None
 '
 '***************************************************************************************************
-Private Function ResizeTables()
+Function ResizeTables()
 Dim oTbl As Table
-
   For Each oTbl In ActiveDocument.Tables
     If oTbl.PreferredWidthType = wdPreferredWidthPoints And oTbl.PreferredWidth > ActiveDocument.PageSetup.TextColumns.Width Then
       oTbl.AutoFitBehavior wdAutoFitFixed
@@ -277,5 +232,3 @@ Dim oTbl As Table
   Next oTbl
     
 End Function
-
-

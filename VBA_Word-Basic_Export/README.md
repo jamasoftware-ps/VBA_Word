@@ -42,4 +42,4 @@ To try out the export:
 
 ## Macro source code
 
-Much of the formatting is accomplished using a macro embedded in the Word document. Jama_Export_PostProcessing.bas includes the source code for that macro.
+Much of the formatting is accomplished using a macro embedded in the Word document. Main.bas and Functions.bas include the source code for the macro.
