@@ -4,8 +4,8 @@ Jama Software is the definitive system of record and action for product developm
 
 Please visit [dev.jamasoftware.com](http://dev.jamasoftware.com) for additional resources and join the discussion in our community [community.jamasoftware.com](http://community.jamasoftware.com).
 
-##Community Macro Downloads
+## Community Macro Downloads
 In partnership with Jama's Consulting team, we'd like to offer some custom macros for our customers. These macros were written with VBA. Please note that these reports come as-is. Jama Support will not assist with the use or modification of the reports.
  
-###Interested in having someone guide you through this process?
+### Interested in having someone guide you through this process?
 If you are interested in having a consultant tailor a report for you, build one from scratch or train you on how to write your own, please reach out to your Jama Account Manager to scope out a project.
