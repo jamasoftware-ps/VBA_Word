@@ -30,7 +30,10 @@ Sub AutoOpen()
   UpdateProgress ("[50%] Updating Outline Levels...")
   RemoveOutlineLevel ("Item ID")
   RemoveOutlineLevel ("Item Name")
-  RemoveOutlineLevel ("Normal")
+  
+  'Uncomment the following line to force all body text to have a body outline level (keeps it out of the TOC)
+  'Side effect will be that some formatting is lost (e.g. bulletted lists and numbered lists)
+  'RemoveOutlineLevel ("Normal")
   
   'ensure all text of style Normal uses the font Arial
   UpdateProgress ("[70%] Correcting Fonts...")

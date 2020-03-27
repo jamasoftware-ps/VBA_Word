@@ -100,8 +100,6 @@ Function repairFonts(font_face As String)
     Selection.Find.Replacement.ClearFormatting
     With Selection.Find.Replacement.Font
         .Name = font_face
-        .Bold = False
-        .Italic = False
     End With
     With Selection.Find
         .Text = ""
